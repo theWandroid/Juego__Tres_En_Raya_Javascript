@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activitat Tres en Raya</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        h1,
+        h2 {
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        #container {
+            width: 600px;
+            display: flex;
+            flex-wrap: wrap;
+            margin: auto;
+        }
+
+        #container div {
+            width: 200px;
+            height: 200px;
+            border: #000 2px solid;
+
+        }
+
+        .casilla {
+            background-color: #333;
+        }
+
+        .casilla:hover {
+            background-color: #777;
+        }
+
+        .cruceta {
+            background-color: #a5f;
+            background-image: url(./img/cross.svg);
+            background-position: center;
+        }
+
+        .circulo {
+            background-color: #0f0;
+            background-image: url(./img/circle.svg);
+            background-position: center;
+            background-size: contain;
+
+        }
+
+        .theEnd {
+            background-color: #f00;
+        }
+
+        input{
+            margin: auto;
+            display: block;
+            width: 200px;
+            padding: 20px;
+            text-transform: uppercase;
+            background-color: #333;
+            color:#fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>tres en raya con javascript</h1>
+    <div id="container">
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+        <div class="casilla"></div>
+    </div>
+    <h2></h2>
+    <input type="submit" id="button" value="resetear">
+
+    <script>
+        const posiciones = document.querySelectorAll('#container div');
+        const textContainer = document.querySelector('h2');
+        const resButton = document.querySelector('#button');
+        const container = document.querySelector('#container')
+        let counter = 1;
+        let winsMessage = '';
+
+        const decidir = e => {
+            let miClase = '';
+            //este codigo solo se ejecutara en el caso de que el Winsmessage no contenga nada y hayamos pulsado dentro de #container
+            if (winsMessage == '' && container.contains(e.target))
+            //este codigo se ejecutara si se cumplen las condiciones anteriores además de que donde pulsemos no haya ni la clase cruceta ni circulo
+                if (!(e.target.classList.contains('cruceta') || e.target.classList.contains('circulo'))) {
+                    //le añade una nueva clase dependiendo si counter es par o impar
+                    if (counter % 2 === 0) {
+                        e.target.classList.add('cruceta');
+                        miClase = 'cruceta';
+                    } else {
+                        e.target.classList.add('circulo');
+                        miClase = 'circulo';
+                    }
+                    //quita la clase casilla, tanto a cruceta como a circulo
+                    e.target.classList.remove('casilla');
+                    //suma el contador en 1
+                    counter++;
+                    //cumprueba si se ha hecho un tres en ralla
+                    comprobar(miClase);
+                }
+        }
+
+        const comprobar = cas => {
+
+            // en el caso de que se cumpla cualquiera de las circuntancias se imprimira un texto en winMessage
+            if (
+                (posiciones[0].classList.contains(cas) && posiciones[1].classList.contains(cas) && posiciones[2].classList.contains(cas)) ||
+                (posiciones[3].classList.contains(cas) && posiciones[4].classList.contains(cas) && posiciones[5].classList.contains(cas)) ||
+                (posiciones[6].classList.contains(cas) && posiciones[7].classList.contains(cas) && posiciones[8].classList.contains(cas)) ||
+                (posiciones[0].classList.contains(cas) && posiciones[3].classList.contains(cas) && posiciones[6].classList.contains(cas)) ||
+                (posiciones[1].classList.contains(cas) && posiciones[4].classList.contains(cas) && posiciones[7].classList.contains(cas)) ||
+                (posiciones[2].classList.contains(cas) && posiciones[5].classList.contains(cas) && posiciones[8].classList.contains(cas)) ||
+                (posiciones[0].classList.contains(cas) && posiciones[4].classList.contains(cas) && posiciones[8].classList.contains(cas)) ||
+                (posiciones[2].classList.contains(cas) && posiciones[4].classList.contains(cas) && posiciones[6].classList.contains(cas))) {
+
+                if (cas == 'cruceta') {
+                    winsMessage = 'El jugador 1 ha ganado';
+
+                } else {
+                    winsMessage = 'El jugador 2 ha ganado';
+                }
+            }
+           // esta condición comprueba si el h2 esta vacio, en el caso de tener algo dentro quita a todas las casillas la 
+            if (winsMessage != '') {
+                posiciones.forEach(pos => pos.classList.remove('casilla'));
+            }
+            textContainer.innerHTML = winsMessage;
+        }
+
+        // esta función resetea el juego
+        const restart = _ => {
+            posiciones.forEach(pos => {
+                pos.classList.add('casilla');
+                pos.classList.remove('cruceta');
+                pos.classList.remove('circulo');
+                winsMessage = '';
+            }
+            )
+        }
+        posiciones.forEach(pos => addEventListener('click', decidir));
+        resButton.addEventListener('click', restart);
+    </script>
+</body>
+
+</html>
